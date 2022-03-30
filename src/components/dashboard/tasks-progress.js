@@ -1,11 +1,10 @@
-import { Avatar, Box, Card, CardContent, Grid, LinearProgress, Typography } from '@mui/material';
-import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';
+import { Avatar, Box, Card, Button, CardContent, Grid, LinearProgress, Typography } from '@mui/material';
+import PeopleIcon from '@mui/icons-material/PeopleOutlined';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 export const TasksProgress = (props) => (
-  <Card
-    sx={{ height: '100%' }}
-    {...props}
-  >
+  <Card {...props}>
+    <Button>
     <CardContent>
       <Grid
         container
@@ -18,33 +17,51 @@ export const TasksProgress = (props) => (
             gutterBottom
             variant="overline"
           >
-            TASKS PROGRESS
+            TOTAL GURU
           </Typography>
           <Typography
             color="textPrimary"
             variant="h4"
           >
-            75.5%
+            32
           </Typography>
         </Grid>
         <Grid item>
           <Avatar
             sx={{
-              backgroundColor: 'warning.main',
+              backgroundColor: 'success.main',
               height: 56,
               width: 56
             }}
           >
-            <InsertChartIcon />
+            <PeopleIcon />
           </Avatar>
         </Grid>
       </Grid>
-      <Box sx={{ pt: 3 }}>
-        <LinearProgress
-          value={75.5}
-          variant="determinate"
-        />
+      <Box
+        sx={{
+          alignItems: 'center',
+          display: 'flex',
+          pt: 2
+        }}
+      >
+        <ArrowUpwardIcon color="success" />
+        <Typography
+          variant="body2"
+          sx={{
+            mr: 1
+          }}
+        >
+          2%
+        </Typography>
+        <Typography
+          color="textSecondary"
+          variant="caption"
+        >
+          dari tahun ajaran lalu
+        </Typography>
       </Box>
     </CardContent>
+    </Button>
   </Card>
 );

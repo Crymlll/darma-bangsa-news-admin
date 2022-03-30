@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Checkbox,
   Table,
@@ -17,7 +18,55 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
+
+import { db } from "../../firebase/firebase";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+
+
+
+
+
 export const CustomerListResults = ({ customers, ...rest }) => {
+  const [newName, setNewName] = useState("");
+  const [newAge, setNewAge] = useState(0);
+
+  const [users, setUsers] = useState([]);
+  const usersCollectionRef = collection(db, "users");
+
+  const createUser = async () => {
+    await addDoc(usersCollectionRef, { name: newName, age: Number(newAge) });
+  };
+
+  const updateUser = async (id, age) => {
+    const userDoc = doc(db, "users", id);
+    const newFields = { age: age + 1 };
+    await updateDoc(userDoc, newFields);
+  };
+
+  const deleteUser = async (id) => {
+    const userDoc = doc(db, "users", id);
+    await deleteDoc(userDoc);
+  };
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const data = await getDocs(usersCollectionRef);
+      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getUsers();
+  }, []);
+
+
+
+
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -81,24 +130,27 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  Name
+                  Nama
+                </TableCell>
+                <TableCell>
+                  NISN / NIP
                 </TableCell>
                 <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
+                  Kelas
                 </TableCell>
                 <TableCell>
-                  Phone
+                  Role
                 </TableCell>
                 <TableCell>
-                  Registration date
+                  Action
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {users.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -112,37 +164,45 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
+                    {customer.nama}
+                  </TableCell>
+                  <TableCell>
+                    {customer.no_induk}
                   </TableCell>
                   <TableCell>
                     {customer.email}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {customer.kelas}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {customer.role}
                   </TableCell>
+
                   <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
+                    <Box
+                      sx={{
+                        display: 'flex'
+                      }}
+                    >
+                      <Button
+                        color="warning"
+                        variant="contained"
+                        href="/edit"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        color="error"
+                        variant="contained"
+                        href = "/customers"
+                        onClick={ () => {
+                          deleteUser(customer.id)
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}

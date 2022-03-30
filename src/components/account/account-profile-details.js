@@ -10,6 +10,8 @@ import {
   TextField
 } from '@mui/material';
 
+import { notesRef } from "../../firebase/firebase"
+
 const states = [
   {
     value: 'alabama',
@@ -171,12 +173,12 @@ export const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button
+            <Button
             color="primary"
             variant="contained"
-          >
+            >
             Save details
-          </Button>
+            </Button>
         </Box>
       </Card>
     </form>

@@ -29,7 +29,7 @@ import {
 
 
 
-const Register = () => {
+const Edit = () => {
 
   const [text, onChangeText] = useState({
     email: '',
@@ -135,7 +135,7 @@ const clickHandler = (textInput) => {
 
       createUser()
 
-      router.push('/users');
+      router.push('/customers');
     }
   });
 
@@ -143,7 +143,7 @@ const clickHandler = (textInput) => {
     <>
       <Head>
         <title>
-          User Register
+          User Edit
         </title>
       </Head>
       <Box
@@ -173,14 +173,14 @@ const clickHandler = (textInput) => {
                 color="textPrimary"
                 variant="h4"
               >
-                Membuat User Baru
+                Edit User
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
               >
-                Silahkan isi data user di bawah ini
+                Silahkan lengkapi data user di bawah ini
               </Typography>
             </Box>
             <TextField
@@ -291,7 +291,7 @@ const clickHandler = (textInput) => {
                 type="submit"
                 variant="contained"
               >
-                Register User Baru
+                Edit User Baru
               </Button>
             </Box>
           </form>
@@ -301,4 +301,4 @@ const clickHandler = (textInput) => {
   );
 };
 
-export default Register;
+export default Edit;

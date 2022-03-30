@@ -1,12 +1,16 @@
-import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Grid, Typography, Button } from '@mui/material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
+import { set } from 'nprogress';
 
 export const Budget = (props) => (
   <Card
     sx={{ height: '100%' }}
     {...props}
-  >
+    >
+    <Button
+      href='/products'
+    >
     <CardContent>
       <Grid
         container
@@ -19,13 +23,13 @@ export const Budget = (props) => (
             gutterBottom
             variant="overline"
           >
-            BUDGET
+            TOTAL POST
           </Typography>
           <Typography
             color="textPrimary"
             variant="h4"
           >
-            $24k
+            215
           </Typography>
         </Grid>
         <Grid item>
@@ -55,15 +59,16 @@ export const Budget = (props) => (
           }}
           variant="body2"
         >
-          12%
+          2 Post
         </Typography>
         <Typography
           color="textSecondary"
           variant="caption"
         >
-          Since last month
+          Dari bulan lalu
         </Typography>
       </Box>
     </CardContent>
+    </Button>
   </Card>
 );

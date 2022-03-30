@@ -8,7 +8,7 @@ const Settings = () => (
   <>
     <Head>
       <title>
-        Settings | Material Kit
+        Settings
       </title>
     </Head>
     <Box
@@ -26,9 +26,6 @@ const Settings = () => (
           Settings
         </Typography>
         <SettingsNotifications />
-        <Box sx={{ pt: 3 }}>
-          <SettingsPassword />
-        </Box>
       </Container>
     </Box>
   </>
