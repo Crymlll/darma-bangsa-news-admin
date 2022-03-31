@@ -24,7 +24,7 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/products',
+    href: '/berita',
     icon: (<UploadIcon fontSize="small" />),
     title: 'Berita Sekolah'
   },
@@ -33,31 +33,16 @@ const items = [
     icon: (<UsersIcon fontSize="small" />),
     title: 'Users'
   },
-  // {
-  //   href: '/products',
-  //   icon: (<ShoppingBagIcon fontSize="small" />),
-  //   title: 'Products'
-  // },
-  // {
-  //   href: '/account',
-  //   icon: (<UserIcon fontSize="small" />),
-  //   title: 'Account'
-  // },
-  // {
-    //   href: '/register',
-    //   icon: (<UserAddIcon fontSize="small" />),
-    //   title: 'Register'
-    // },
-    // {
-      //   href: '/404',
-      //   icon: (<XCircleIcon fontSize="small" />),
-      //   title: 'Error'
-      // }
-      {
-        href: '/settings',
-        icon: (<CogIcon fontSize="small" />),
-        title: 'Settings'
-      },
+  {
+    href: '/[users]',
+    icon: (<UsersIcon fontSize="small" />),
+    title: 'Users'
+  },
+  {
+    href: '/settings',
+    icon: (<CogIcon fontSize="small" />),
+    title: 'Settings'
+  },
     ];
 
 export const DashboardSidebar = (props) => {

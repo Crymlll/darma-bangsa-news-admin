@@ -27,26 +27,15 @@ export const ProductListToolbar = (props) => (
         sx={{ m: 1 }}
         variant="h4"
       >
-        Products
+        Berita Sekolah
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button
-          startIcon={(<UploadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Import
-        </Button>
-        <Button
-          startIcon={(<DownloadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Export
-        </Button>
-        <Button
           color="primary"
           variant="contained"
+          href='/postberita'
         >
-          Add products
+          Buat Berita Baru
         </Button>
       </Box>
     </Box>
@@ -68,7 +57,7 @@ export const ProductListToolbar = (props) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Search product"
+              placeholder="Search Berita Sekolah"
               variant="outlined"
             />
           </Box>

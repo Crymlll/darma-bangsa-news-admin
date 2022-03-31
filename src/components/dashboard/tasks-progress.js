@@ -1,10 +1,12 @@
 import { Avatar, Box, Card, Button, CardContent, Grid, LinearProgress, Typography } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/PeopleOutlined';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 export const TasksProgress = (props) => (
   <Card {...props}>
-    <Button>
+    <Button
+      href='/users'
+    >
     <CardContent>
       <Grid
         container
@@ -45,14 +47,14 @@ export const TasksProgress = (props) => (
           pt: 2
         }}
       >
-        <ArrowUpwardIcon color="success" />
+        <ArrowDownwardIcon color="error" />
         <Typography
           variant="body2"
           sx={{
             mr: 1
           }}
         >
-          2%
+          6%
         </Typography>
         <Typography
           color="textSecondary"

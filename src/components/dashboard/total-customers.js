@@ -4,7 +4,9 @@ import PeopleIcon from '@mui/icons-material/PeopleOutlined';
 
 export const TotalCustomers = (props) => (
   <Card {...props}>
-    <Button>
+    <Button
+      href='/users'
+    >
     <CardContent>
       <Grid
         container
@@ -23,7 +25,7 @@ export const TotalCustomers = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            215
+            225
           </Typography>
         </Grid>
         <Grid item>

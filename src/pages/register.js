@@ -11,7 +11,12 @@ import {
   FormHelperText,
   Link,
   TextField,
-  Typography
+  Typography,
+  MenuItem,
+  FormControl,
+  Select,
+  InputLabel,
+
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -219,18 +224,25 @@ const clickHandler = (textInput) => {
               value={formik.values.kelas}
               variant="outlined"
             />
-            <TextField
-              error={Boolean(formik.touched.role && formik.errors.role)}
-              fullWidth
-              helperText={formik.touched.role && formik.errors.role}
-              label="Role"
-              margin="normal"
-              name="role"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.role}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.role}
+                onChange={formik.handleChange('role')}
+                autoWidth
+                label="Role"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'siswa'}>Siswa</MenuItem>
+                <MenuItem value={'guru'}>Guru</MenuItem>
+                <MenuItem value={'guru konseling'}>Guru Konseling</MenuItem>
+                <MenuItem value={'wali kelas'}>Wali Kelas</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth

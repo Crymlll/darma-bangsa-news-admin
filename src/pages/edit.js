@@ -11,7 +11,12 @@ import {
   FormHelperText,
   Link,
   TextField,
-  Typography
+  Typography,
+  MenuItem,
+  FormControl,
+  Select,
+  InputLabel,
+  
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -21,6 +26,7 @@ import { db } from "../firebase/firebase";
 import {
   collection,
   getDocs,
+  getDoc,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -30,7 +36,10 @@ import {
 
 
 const Edit = () => {
-
+  const router = useRouter();
+  const dataQuery = router.query
+  // console.log(dataQuery.id)
+  
   const [text, onChangeText] = useState({
     email: '',
     kelas: '',
@@ -50,11 +59,6 @@ const clickHandler = (textInput) => {
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "users");
 
-  const updateUser = async (id, age) => {
-    const userDoc = doc(db, "users", id);
-    const newFields = { age: age + 1 };
-    await updateDoc(userDoc, newFields);
-  };
 
   const deleteUser = async (id) => {
     const userDoc = doc(db, "users", id);
@@ -63,15 +67,27 @@ const clickHandler = (textInput) => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      let fetchdata = doc(db, 'users', dataQuery.id)
+      const dataAll = await getDoc(fetchdata);
+      console.log(dataAll.data())
+
+      formik.setValues({
+        email: dataAll.data().email,
+        kelas: dataAll.data().kelas,
+        nama: dataAll.data().nama,
+        no_induk: dataAll.data().no_induk,
+        role: dataAll.data().role,
+      })
+      // console.log(users.kelas)
+      // const data = await getDocs(usersCollectionRef);
+      // setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
 
     getUsers();
+    
   }, []);
 
 
-  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       no_induk: '',
@@ -114,28 +130,34 @@ const clickHandler = (textInput) => {
         .string()
         .max(255)
         .required(
-          'Password is required'),
-      policy: Yup
-        .boolean()
-        .oneOf(
-          [true],
-          'This field must be checked'
-        )
+          'Password is required')
     }),
     onSubmit: () => {
-      const createUser = async () => {
-        await addDoc(usersCollectionRef, {
+      // const createUser = async () => {
+      //   await addDoc(usersCollectionRef, {
+      //     email: formik.values.email,
+      //     kelas: formik.values.kelas,
+      //     nama: formik.values.nama,
+      //     no_induk: formik.values.no_induk,
+      //     role: formik.values.role,
+      //   });
+      // };
+
+      const updateUser = async () => {
+        const userDoc = doc(db, "users", dataQuery.id);
+        const newFields = { 
           email: formik.values.email,
           kelas: formik.values.kelas,
           nama: formik.values.nama,
           no_induk: formik.values.no_induk,
           role: formik.values.role,
-        });
+        };
+        await updateDoc(userDoc, newFields);
       };
 
-      createUser()
+      updateUser()
 
-      router.push('/customers');
+      router.push('/users');
     }
   });
 
@@ -219,18 +241,25 @@ const clickHandler = (textInput) => {
               value={formik.values.kelas}
               variant="outlined"
             />
-            <TextField
-              error={Boolean(formik.touched.role && formik.errors.role)}
-              fullWidth
-              helperText={formik.touched.role && formik.errors.role}
-              label="Role"
-              margin="normal"
-              name="role"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.role}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.role}
+                onChange={formik.handleChange('role')}
+                autoWidth
+                label="Role"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'siswa'}>Siswa</MenuItem>
+                <MenuItem value={'guru'}>Guru</MenuItem>
+                <MenuItem value={'guru konseling'}>Guru Konseling</MenuItem>
+                <MenuItem value={'wali kelas'}>Wali Kelas</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
+import Link from 'next/link'
 import { format } from 'date-fns';
 import {
   Avatar,
@@ -185,13 +186,14 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Button
-                        color="warning"
-                        variant="contained"
-                        href="/edit"
-                      >
-                        Edit
-                      </Button>
+                      <Link href={`/edit?id=${encodeURIComponent(customer.id)}`}>
+                        <Button
+                          color="warning"
+                          variant="contained"
+                        >
+                          Edit
+                        </Button>
+                      </Link>
                       <Button
                         color="error"
                         variant="contained"

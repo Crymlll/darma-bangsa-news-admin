@@ -9,7 +9,7 @@ export const Budget = (props) => (
     {...props}
     >
     <Button
-      href='/products'
+      href='/berita'
     >
     <CardContent>
       <Grid
@@ -29,7 +29,7 @@ export const Budget = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            215
+            109
           </Typography>
         </Grid>
         <Grid item>
