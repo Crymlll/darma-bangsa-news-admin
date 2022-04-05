@@ -5,13 +5,14 @@ import {
   CardContent,
   TextField,
   InputAdornment,
-  SvgIcon, Typography
+  SvgIcon,
+  Typography
 } from '@mui/material';
+import { Download as DownloadIcon } from '../../icons/download';
 import { Search as SearchIcon } from '../../icons/search';
 import { Upload as UploadIcon } from '../../icons/upload';
-import { Download as DownloadIcon } from '../../icons/download';
 
-export const CustomerListToolbar = (props) => (
+export const BeritaListToolbar = (props) => (
   <Box {...props}>
     <Box
       sx={{
@@ -26,27 +27,15 @@ export const CustomerListToolbar = (props) => (
         sx={{ m: 1 }}
         variant="h4"
       >
-        Users
+        Berita Sekolah
       </Typography>
       <Box sx={{ m: 1 }}>
-        {/* <Button
-          startIcon={(<UploadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Import
-        </Button>
-        <Button
-          startIcon={(<DownloadIcon fontSize="small" />)}
-          sx={{ mr: 1 }}
-        >
-          Export
-        </Button> */}
         <Button
           color="primary"
           variant="contained"
-          href="/register"
+          href='/berita/post'
         >
-          Add User
+          Buat Berita Baru
         </Button>
       </Box>
     </Box>
@@ -60,15 +49,15 @@ export const CustomerListToolbar = (props) => (
                 startAdornment: (
                   <InputAdornment position="start">
                     <SvgIcon
-                      color="action"
                       fontSize="small"
+                      color="action"
                     >
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
                 )
               }}
-              placeholder="Search User"
+              placeholder="Search Berita Sekolah"
               variant="outlined"
             />
           </Box>

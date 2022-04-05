@@ -34,7 +34,7 @@ import {
 
 
 
-export const CustomerListResults = ({ customers, ...rest }) => {
+export const UserListResults = ({ customers, ...rest }) => {
   const [newName, setNewName] = useState("");
   const [newAge, setNewAge] = useState(0);
 
@@ -186,7 +186,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Link href={`/edit?id=${encodeURIComponent(customer.id)}`}>
+                      <Link href={`/users/edit?id=${encodeURIComponent(customer.id)}`}>
                         <Button
                           color="warning"
                           variant="contained"
@@ -225,6 +225,6 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
+UserListResults.propTypes = {
   customers: PropTypes.array.isRequired
 };

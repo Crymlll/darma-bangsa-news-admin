@@ -16,30 +16,27 @@ import {
   FormControl,
   Select,
   InputLabel,
-  
+
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 import { useState, useEffect } from "react";
-import { db } from "../firebase/firebase";
+import { db } from "../../firebase/firebase";
+// import { getAuth } from "../../firebase/auth"
 import {
   collection,
   getDocs,
-  getDoc,
   addDoc,
   updateDoc,
   deleteDoc,
   doc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 
 
-const Edit = () => {
-  const router = useRouter();
-  const dataQuery = router.query
-  // console.log(dataQuery.id)
-  
+const Register = () => {
+
   const [text, onChangeText] = useState({
     email: '',
     kelas: '',
@@ -59,6 +56,11 @@ const clickHandler = (textInput) => {
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "users");
 
+  const updateUser = async (id, age) => {
+    const userDoc = doc(db, "users", id);
+    const newFields = { age: age + 1 };
+    await updateDoc(userDoc, newFields);
+  };
 
   const deleteUser = async (id) => {
     const userDoc = doc(db, "users", id);
@@ -67,27 +69,15 @@ const clickHandler = (textInput) => {
 
   useEffect(() => {
     const getUsers = async () => {
-      let fetchdata = doc(db, 'users', dataQuery.id)
-      const dataAll = await getDoc(fetchdata);
-      console.log(dataAll.data())
-
-      formik.setValues({
-        email: dataAll.data().email,
-        kelas: dataAll.data().kelas,
-        nama: dataAll.data().nama,
-        no_induk: dataAll.data().no_induk,
-        role: dataAll.data().role,
-      })
-      // console.log(users.kelas)
-      // const data = await getDocs(usersCollectionRef);
-      // setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      const data = await getDocs(usersCollectionRef);
+      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
 
     getUsers();
-    
   }, []);
 
 
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       no_induk: '',
@@ -130,32 +120,26 @@ const clickHandler = (textInput) => {
         .string()
         .max(255)
         .required(
-          'Password is required')
+          'Password is required'),
+      policy: Yup
+        .boolean()
+        .oneOf(
+          [true],
+          'This field must be checked'
+        )
     }),
     onSubmit: () => {
-      // const createUser = async () => {
-      //   await addDoc(usersCollectionRef, {
-      //     email: formik.values.email,
-      //     kelas: formik.values.kelas,
-      //     nama: formik.values.nama,
-      //     no_induk: formik.values.no_induk,
-      //     role: formik.values.role,
-      //   });
-      // };
-
-      const updateUser = async () => {
-        const userDoc = doc(db, "users", dataQuery.id);
-        const newFields = { 
+      const createUser = async () => {
+        await addDoc(usersCollectionRef, {
           email: formik.values.email,
           kelas: formik.values.kelas,
           nama: formik.values.nama,
           no_induk: formik.values.no_induk,
           role: formik.values.role,
-        };
-        await updateDoc(userDoc, newFields);
+        });
       };
 
-      updateUser()
+      createUser()
 
       router.push('/users');
     }
@@ -165,7 +149,7 @@ const clickHandler = (textInput) => {
     <>
       <Head>
         <title>
-          User Edit
+          User Register
         </title>
       </Head>
       <Box
@@ -195,14 +179,14 @@ const clickHandler = (textInput) => {
                 color="textPrimary"
                 variant="h4"
               >
-                Edit User
+                Membuat User Baru
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
               >
-                Silahkan lengkapi data user di bawah ini
+                Silahkan isi data user di bawah ini
               </Typography>
             </Box>
             <TextField
@@ -320,7 +304,7 @@ const clickHandler = (textInput) => {
                 type="submit"
                 variant="contained"
               >
-                Edit User Baru
+                Register User Baru
               </Button>
             </Box>
           </form>
@@ -330,4 +314,4 @@ const clickHandler = (textInput) => {
   );
 };
 
-export default Edit;
+export default Register;
