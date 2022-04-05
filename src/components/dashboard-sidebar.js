@@ -34,9 +34,9 @@ const items = [
     title: 'Users'
   },
   {
-    href: '/[users]',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Users'
+    href: '/konseling',
+    icon: (<ShoppingBagIcon fontSize="small" />),
+    title: 'Konseling'
   },
   {
     href: '/settings',

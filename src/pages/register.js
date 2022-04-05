@@ -23,6 +23,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { useState, useEffect } from "react";
 import { db } from "../firebase/firebase";
+import { getAuth } from "firebase/auth"
 import {
   collection,
   getDocs,

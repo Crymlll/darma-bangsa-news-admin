@@ -197,7 +197,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/customers"
+                        href = "/users"
                         onClick={ () => {
                           deleteUser(customer.id)
                         }}
