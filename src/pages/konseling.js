@@ -1,15 +1,15 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
-import { UserListResults } from '../components/users/user-list-results';
-import { UserListToolbar } from '../components/users/user-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { customers } from '../__mocks__/customers';
+import { KonselingListResults } from 'src/components/konseling/konseling-list-results';
+import { KonselingListToolbar } from 'src/components/konseling/konseling-list-toolbar';
 
-const Customers = () => (
+const Konseling = () => (
   <>
     <Head>
       <title>
-        Users
+        Konseling
       </title>
     </Head>
     <Box
@@ -20,18 +20,18 @@ const Customers = () => (
       }}
     >
       <Container maxWidth={false}>
-        <UserListToolbar />
+        <KonselingListToolbar />
         <Box sx={{ mt: 3 }}>
-          <UserListResults customers={customers} />
+          <KonselingListResults />
         </Box>
       </Container>
     </Box>
   </>
 );
-Customers.getLayout = (page) => (
+Konseling.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Customers;
+export default Konseling;
