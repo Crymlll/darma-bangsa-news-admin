@@ -35,6 +35,9 @@ import {
 } from "firebase/firestore";
 
 
+import { dbrealtime } from "../../firebase/firebase";
+import { set, ref, onValue, child, get } from "firebase/database";
+
 
 const PostBerita = () => {
 
@@ -55,7 +58,9 @@ const clickHandler = (textInput) => {
   const [newName, setNewName] = useState("");
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "berita");
+  const [panjang, setPanjang] = useState([]);
+
+  const usersCollectionRef = ref(dbrealtime, 'berita');
 
   const updateUser = async (id, age) => {
     const userDoc = doc(db, "users", id);
@@ -68,60 +73,40 @@ const clickHandler = (textInput) => {
     await deleteDoc(userDoc);
   };
 
-  useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  useEffect(() => {   
+    const getUsers = async () => {  
+      console.log("data")
+      onValue(usersCollectionRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log(data)
+        setUsers(data);
+        console.log(users)
+      })
     };
 
     getUsers();
   }, []);
 
 
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      no_induk: '',
-      email: '',
       judul: '',
-      kelas: '',
-      password: '',
-      role: '',
+      konten: '',
       policy: false,
     },
     validationSchema: Yup.object({
-      email: Yup
-        .string()
-        .email(
-          'Must be a valid email')
-        .max(255)
-        .required(
-          'Email is required'),
-      no_induk: Yup
-      .string()
-      .max(255)
-      .required(
-        'No Induk is required'),
       judul: Yup
         .string()
         .max(255)
         .required(
           'judul is required'),
-      isi: Yup
+      konten: Yup
         .string()
         .max(255)
         .required(
           'Isi Berita is required'),
-      role: Yup
-      .string()
-      .max(255)
-      .required(
-        'Role is required'),
-      password: Yup
-        .string()
-        .max(255)
-        .required(
-          'Password is required'),
       policy: Yup
         .boolean()
         .oneOf(
@@ -131,18 +116,20 @@ const clickHandler = (textInput) => {
     }),
     onSubmit: () => {
       const createUser = async () => {
-        await addDoc(usersCollectionRef, {
-          email: formik.values.email,
-          kelas: formik.values.kelas,
+        let id_berita = 0;
+        onValue(usersCollectionRef, (snapshot) => {
+          const data = snapshot.val();
+          id_berita = data.length
+        })
+        await set(ref(dbrealtime, 'berita/' + id_berita), {
           judul: formik.values.judul,
-          no_induk: formik.values.no_induk,
-          role: formik.values.role,
+          konten: formik.values.konten,
         });
       };
 
       createUser()
 
-      router.push('/users');
+      router.push('/berita');
     }
   });
 
@@ -203,7 +190,13 @@ const clickHandler = (textInput) => {
               variant="outlined"
             />
             <TextareaAutosize
+              error={Boolean(formik.touched.judul && formik.errors.judul)}
               label = "Isi Berita"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.konten}
+              variant="outlined"
+              name="konten"
               minRows={37}
               aria-label="maximum height"
               placeholder="Isi berita... :)"

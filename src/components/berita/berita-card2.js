@@ -20,51 +20,56 @@ import {
 import { getInitials } from '../../utils/get-initials';
 
 
-import { db } from "../../firebase/firebase";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { dbrealtime } from "../../firebase/firebase";
+import { ref, onValue, child, get } from "firebase/database";
 
 
 
 
 
-export const KonselingListResults = ({...rest }) => {
+export const BeritaCard2 = ({...rest }) => {
   const [newName, setNewName] = useState("");
   const [newAge, setNewAge] = useState(0);
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "users");
-  // const logData = async () => {
-  //   const data = await getDocs(usersCollectionRef);
-  //   console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-  // };
-  // logData()
+  const usersCollectionRef = ref(dbrealtime, 'berita');
+  
+  const starCountRef = ref(dbrealtime, 'berita');
+  onValue(starCountRef, (snapshot) => {
+    const data = snapshot.val();
+    console.log(data)
+    console.log(data.length)
+    // for(let i in data){
+    //     console.log(i)
+    //     console.log(data[i].judul)
+    //     console.log(data[i].konten)
+    // }
+  })
 
   const createUser = async () => {
     await addDoc(usersCollectionRef, { name: newName, age: Number(newAge) });
   };
 
   const updateUser = async (id, age) => {
-    const userDoc = doc(db, "users", id);
+    const userDoc = doc(dbrealtime, "beritas", id);
     const newFields = { age: age + 1 };
     await updateDoc(userDoc, newFields);
   };
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "users", id);
+    const userDoc = doc(dbrealtime, "beritas", id);
     await deleteDoc(userDoc);
   };
 
   useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    const getUsers = async () => {  
+      console.log("data")
+      onValue(usersCollectionRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log(data)
+        setUsers(data);
+        console.log(users)
+      })
     };
 
     getUsers();
@@ -84,19 +89,10 @@ export const KonselingListResults = ({...rest }) => {
                   ID 
                 </TableCell>
                 <TableCell>
-                  Nama
+                  Judul 
                 </TableCell>
                 <TableCell>
-                  NISN / NIP
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Kelas
-                </TableCell>
-                <TableCell>
-                  Role
+                  Konten
                 </TableCell>
                 <TableCell>
                   Action
@@ -111,22 +107,13 @@ export const KonselingListResults = ({...rest }) => {
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                   >
                   <TableCell>
-                    1
+                    {customer.id}
                   </TableCell>
                   <TableCell>
-                    {customer.nama}
+                    {customer.judul}
                   </TableCell>
                   <TableCell>
-                    {customer.no_induk}
-                  </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {customer.kelas}
-                  </TableCell>
-                  <TableCell>
-                    {customer.role}
+                    {customer.konten}
                   </TableCell>
 
                   <TableCell>
@@ -165,6 +152,6 @@ export const KonselingListResults = ({...rest }) => {
   );
 };
 
-KonselingListResults.propTypes = {
+BeritaCard2.propTypes = {
   customers: PropTypes.array.isRequired
 };
