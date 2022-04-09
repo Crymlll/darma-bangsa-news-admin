@@ -100,14 +100,14 @@ export const BeritaCard2 = ({...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((customer) => (
+              {users.map((customer, index) => (
                 <TableRow
                   hover
                   key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  selected={selectedCustomerIds.indexOf(index) !== -1}
                   >
                   <TableCell>
-                    {customer.id}
+                    {index}
                   </TableCell>
                   <TableCell>
                     {customer.judul}
