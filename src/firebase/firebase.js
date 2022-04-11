@@ -3,8 +3,10 @@ import 'firebase/database'
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "@firebase/firestore";
-import { getAuth } from "firebase/auth"
-import { getDatabase } from "firebase/database"
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -33,3 +35,15 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const dbrealtime = getDatabase(app);
+export const messaging = getMessaging(app);
+export async function getFCMToken() {
+    try {
+        // Don't forget to paste your VAPID key here
+		// (you can find it in the Console too)
+        const token = await getToken(messaging, { vapidKey: "BHhDQQ2eKLnRmNld6LWypIy-GQ2zCssWmrtIaTnFa3ZfR3Q4vkT2xjXqk2UQqZiM3KvMhurgeWTkvocdubsNheg" });
+        return token;
+    } catch (e) {
+        console.log('getFCMToken error', e);
+        return undefined
+    }
+}
