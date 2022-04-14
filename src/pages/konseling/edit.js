@@ -41,11 +41,12 @@ const Edit = () => {
   // console.log(dataQuery.id)
   
   const [text, onChangeText] = useState({
-    email: '',
-    kelas: '',
+    permasalahan: '',
+    guru: '',
     nama: '',
-    no_induk: '',
-    role: '',
+    kelas: '',
+    jam: '',
+    status: '',
 });
 
 const clickHandler = (textInput) => {
@@ -57,26 +58,27 @@ const clickHandler = (textInput) => {
   const [newName, setNewName] = useState("");
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "users");
+  const usersCollectionRef = collection(db, "konseling");
 
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "users", id);
+    const userDoc = doc(db, "konseling", id);
     await deleteDoc(userDoc);
   };
 
   useEffect(() => {
     const getUsers = async () => {
-      let fetchdata = doc(db, 'users', dataQuery.id)
+      let fetchdata = doc(db, 'konseling', dataQuery.id)
       const dataAll = await getDoc(fetchdata);
       console.log(dataAll.data())
 
       formik.setValues({
-        email: dataAll.data().email,
-        kelas: dataAll.data().kelas,
+        permasalahan: dataAll.data().permasalahan,
         nama: dataAll.data().nama,
-        no_induk: dataAll.data().no_induk,
-        role: dataAll.data().role,
+        guru: dataAll.data().guru,
+        deskripsi: dataAll.data().deskripsi,
+        jam: dataAll.data().jam,
+        status: dataAll.data().status,
       })
       // console.log(users.kelas)
       // const data = await getDocs(usersCollectionRef);
@@ -90,12 +92,12 @@ const clickHandler = (textInput) => {
 
   const formik = useFormik({
     initialValues: {
-      no_induk: '',
-      email: '',
+      permasalahan: '',
+      guru: '',
       nama: '',
       kelas: '',
-      password: '',
-      role: '',
+      jam: '',
+      status: '',
       policy: false,
     },
     validationSchema: Yup.object({
@@ -144,20 +146,21 @@ const clickHandler = (textInput) => {
       // };
 
       const updateUser = async () => {
-        const userDoc = doc(db, "users", dataQuery.id);
+        const userDoc = doc(db, "konseling", dataQuery.id);
         const newFields = { 
-          email: formik.values.email,
-          kelas: formik.values.kelas,
+          permsalahan: formik.values.permsalahan,
+          guru: formik.values.guru,
           nama: formik.values.nama,
-          no_induk: formik.values.no_induk,
-          role: formik.values.role,
+          deskripsi: formik.values.deskripsi,
+          jam: formik.values.jam,
+          status: formik.values.status,
         };
         await updateDoc(userDoc, newFields);
       };
 
       updateUser()
 
-      router.push('/users');
+      router.push('/konseling');
     }
   });
 
@@ -179,14 +182,14 @@ const clickHandler = (textInput) => {
       >
         <Container maxWidth="sm">
           <NextLink
-            href="/users"
+            href="/konseling"
             passHref
           >
             <Button
               component="a"
               startIcon={<ArrowBackIcon fontSize="small" />}
             >
-              Users
+              Konseling
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
@@ -194,8 +197,8 @@ const clickHandler = (textInput) => {
               <Typography
                 color="textPrimary"
                 variant="h4"
-              >
-                Edit User
+              > 
+                Edit Data Konseling
               </Typography>
               <Typography
                 color="textSecondary"
@@ -205,6 +208,18 @@ const clickHandler = (textInput) => {
                 Silahkan lengkapi data user di bawah ini
               </Typography>
             </Box>
+            <TextField
+              error={Boolean(formik.touched.permasalahan && formik.errors.permasalahan)}
+              fullWidth
+              helperText={formik.touched.permasalahan && formik.errors.permasalahan}
+              label="Permasalahan"
+              margin="normal"
+              name="permasalahan"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.permasalahan}
+              variant="outlined"
+            />
             <TextField
               error={Boolean(formik.touched.nama && formik.errors.nama)}
               fullWidth
@@ -218,59 +233,66 @@ const clickHandler = (textInput) => {
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.no_induk && formik.errors.no_induk)}
+              error={Boolean(formik.touched.deskripsi && formik.errors.deskripsi)}
               fullWidth
-              helperText={formik.touched.no_induk && formik.errors.no_induk}
-              label="No Induk"
+              helperText={formik.touched.deskripsi && formik.errors.deskripsi}
+              label="Nama"
               margin="normal"
-              name="no_induk"
+              name="deskripsi"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.no_induk}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.kelas && formik.errors.kelas)}
-              fullWidth
-              helperText={formik.touched.kelas && formik.errors.kelas}
-              label="Kelas"
-              margin="normal"
-              name="kelas"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.kelas}
+              value={formik.values.deskripsi}
               variant="outlined"
             />
             <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
+              <InputLabel id="demo-simple-select-autowidth-label">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={formik.values.role}
-                onChange={formik.handleChange('role')}
+                value={formik.values.status}
+                onChange={formik.handleChange('status')}
                 autoWidth
-                label="Role"
+                label="Status"
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={'siswa'}>Siswa</MenuItem>
-                <MenuItem value={'guru'}>Guru</MenuItem>
-                <MenuItem value={'guru konseling'}>Guru Konseling</MenuItem>
-                <MenuItem value={'wali kelas'}>Wali Kelas</MenuItem>
+                <MenuItem value={'on pending'}>On Pending</MenuItem>
+                <MenuItem value={'declined'}>Declined</MenuItem>
+                <MenuItem value={'scheduled'}>Scheduled</MenuItem>
+                <MenuItem value={'done'}>Done</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Guru</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.status}
+                onChange={formik.handleChange('guru')}
+                autoWidth
+                label="Guru"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'on pending'}>On Pending</MenuItem>
+                <MenuItem value={'declined'}>Declined</MenuItem>
+                <MenuItem value={'scheduled'}>Scheduled</MenuItem>
+                <MenuItem value={'done'}>Done</MenuItem>
               </Select>
             </FormControl>
             <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
+              error={Boolean(formik.touched.jam && formik.errors.jam)}
               fullWidth
-              helperText={formik.touched.email && formik.errors.email}
-              label="Email Address"
+              helperText={formik.touched.jam && formik.errors.jam}
+              label="Jam Pelaksanaan"
               margin="normal"
-              name="email"
+              name="jam"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              type="email"
-              value={formik.values.email}
+              type="jam"
+              value={formik.values.jam}
               variant="outlined"
             />
             <TextField

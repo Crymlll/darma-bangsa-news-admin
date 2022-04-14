@@ -39,7 +39,7 @@ export const KonselingListResults = ({...rest }) => {
   const [newAge, setNewAge] = useState(0);
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "users");
+  const usersCollectionRef = collection(db, "konseling");
   // const logData = async () => {
   //   const data = await getDocs(usersCollectionRef);
   //   console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
@@ -51,13 +51,13 @@ export const KonselingListResults = ({...rest }) => {
   };
 
   const updateUser = async (id, age) => {
-    const userDoc = doc(db, "users", id);
+    const userDoc = doc(db, "konseling", id);
     const newFields = { age: age + 1 };
     await updateDoc(userDoc, newFields);
   };
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "users", id);
+    const userDoc = doc(db, "konseling", id);
     await deleteDoc(userDoc);
   };
 
@@ -81,22 +81,22 @@ export const KonselingListResults = ({...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  ID 
+                  Permasalahan 
                 </TableCell>
                 <TableCell>
                   Nama
                 </TableCell>
                 <TableCell>
-                  NISN / NIP
+                  Guru
                 </TableCell>
                 <TableCell>
-                  Email
+                  Deskripsi
                 </TableCell>
                 <TableCell>
-                  Kelas
+                  Jam
                 </TableCell>
                 <TableCell>
-                  Role
+                  Status
                 </TableCell>
                 <TableCell>
                   Action
@@ -111,22 +111,22 @@ export const KonselingListResults = ({...rest }) => {
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                   >
                   <TableCell>
-                    1
+                    {customer.permasalahan}
                   </TableCell>
                   <TableCell>
                     {customer.nama}
                   </TableCell>
                   <TableCell>
-                    {customer.no_induk}
+                    {customer.guru}
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {customer.deskripsi}
                   </TableCell>
                   <TableCell>
-                    {customer.kelas}
+                    {customer.jam}
                   </TableCell>
                   <TableCell>
-                    {customer.role}
+                    {customer.status}
                   </TableCell>
 
                   <TableCell>
@@ -135,7 +135,7 @@ export const KonselingListResults = ({...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Link href={`/users/edit?id=${encodeURIComponent(customer.id)}`}>
+                      <Link href={`/konseling/edit?id=${encodeURIComponent(customer.id)}`}>
                         <Button
                           color="warning"
                           variant="contained"
@@ -146,7 +146,7 @@ export const KonselingListResults = ({...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/users"
+                        href = "/konseling"
                         onClick={ () => {
                           deleteUser(customer.id)
                         }}

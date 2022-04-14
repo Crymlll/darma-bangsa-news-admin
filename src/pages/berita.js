@@ -3,7 +3,6 @@ import { Box, Container, Grid, Pagination } from '@mui/material';
 import { products } from '../__mocks__/products';
 import { BeritaListToolbar } from '../components/berita/berita-list-toolbar';
 import { BeritaCard } from '../components/berita/berita-card';
-import { BeritaCard2 } from '../components/berita/berita-card2';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Products = () => (
@@ -23,7 +22,7 @@ const Products = () => (
       <Container maxWidth={false}>
         <BeritaListToolbar />
         <Box sx={{ mt: 3 }}>
-          <BeritaCard2 />
+          <BeritaCard />
         </Box>
         
         
