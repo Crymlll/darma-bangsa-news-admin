@@ -31,6 +31,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  where
 } from "firebase/firestore";
 
 
@@ -59,6 +61,7 @@ const clickHandler = (textInput) => {
 
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "konseling");
+  const usersCollectionRef2 = collection(db, "users");
 
 
   const deleteUser = async (id) => {
@@ -66,9 +69,11 @@ const clickHandler = (textInput) => {
     await deleteDoc(userDoc);
   };
 
+
   useEffect(() => {
     const getUsers = async () => {
       let fetchdata = doc(db, 'konseling', dataQuery.id)
+      // const q = await usersCollectionRef.where('role', 'in', ['wali kelas', 'guru', 'guru konseling']).get();
       const dataAll = await getDoc(fetchdata);
       console.log(dataAll.data())
 
@@ -80,35 +85,47 @@ const clickHandler = (textInput) => {
         jam: dataAll.data().jam,
         status: dataAll.data().status,
       })
+      // console.log(q)
+      console.log("tes")
       // console.log(users.kelas)
       // const data = await getDocs(usersCollectionRef);
       // setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
+    const cobaTes = async () => {
+  
+      // const q = query(usersCollectionRef, where('role', 'in', ['wali kelas', 'guru', 'guru konseling']));
+      const q = query(usersCollectionRef2, where("role", "!=", "siswa"));
+      const hasil = await getDocs(q);
+      const semuaGuru = hasil.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      console.log(semuaGuru[0].nama)
+      setUsers(semuaGuru)
+    }
 
     getUsers();
+
+    cobaTes();
     
   }, []);
-
 
   const formik = useFormik({
     initialValues: {
       permasalahan: '',
       guru: '',
       nama: '',
-      kelas: '',
+      deskripsi: '',
       jam: '',
       status: '',
       policy: false,
     },
     validationSchema: Yup.object({
-      email: Yup
+      permasalahan: Yup
         .string()
         .email(
           'Must be a valid email')
         .max(255)
         .required(
           'Email is required'),
-      no_induk: Yup
+      status: Yup
       .string()
       .max(255)
       .required(
@@ -118,17 +135,22 @@ const clickHandler = (textInput) => {
         .max(255)
         .required(
           'Nama is required'),
-      kelas: Yup
+      guru: Yup
         .string()
         .max(255)
         .required(
           'Kelas is required'),
+      deskripsi: Yup
+        .string()
+        .max(255)
+        .required(
+          'Deskripsi is required'),
       role: Yup
       .string()
       .max(255)
       .required(
         'Role is required'),
-      password: Yup
+      jam: Yup
         .string()
         .max(255)
         .required(
@@ -236,7 +258,7 @@ const clickHandler = (textInput) => {
               error={Boolean(formik.touched.deskripsi && formik.errors.deskripsi)}
               fullWidth
               helperText={formik.touched.deskripsi && formik.errors.deskripsi}
-              label="Nama"
+              label="Deskripsi"
               margin="normal"
               name="deskripsi"
               onBlur={formik.handleBlur}
@@ -268,7 +290,7 @@ const clickHandler = (textInput) => {
               <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={formik.values.status}
+                value={formik.values.guru}
                 onChange={formik.handleChange('guru')}
                 autoWidth
                 label="Guru"
@@ -276,38 +298,30 @@ const clickHandler = (textInput) => {
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={'on pending'}>On Pending</MenuItem>
-                <MenuItem value={'declined'}>Declined</MenuItem>
-                <MenuItem value={'scheduled'}>Scheduled</MenuItem>
-                <MenuItem value={'done'}>Done</MenuItem>
+                {users.map(item => (
+                  <MenuItem value={item.nama}>{item.nama}</MenuItem>
+                ))}
               </Select>
             </FormControl>
-            <TextField
-              error={Boolean(formik.touched.jam && formik.errors.jam)}
-              fullWidth
-              helperText={formik.touched.jam && formik.errors.jam}
-              label="Jam Pelaksanaan"
-              margin="normal"
-              name="jam"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="jam"
-              value={formik.values.jam}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
-              fullWidth
-              helperText={formik.touched.password && formik.errors.password}
-              label="Password"
-              margin="normal"
-              name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="password"
-              value={formik.values.password}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Jam</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.jam}
+                onChange={formik.handleChange('jam')}
+                autoWidth
+                label="Jam"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'9.30 - 10.15'}>9.30 - 10.15</MenuItem>
+                <MenuItem value={'10.30 - 11.15'}>10.30 - 11.15</MenuItem>
+                <MenuItem value={'11.30 - 12.15'}>11.30 - 12.15</MenuItem>
+                <MenuItem value={'13.30 - 14.15'}>13.30 - 14.15</MenuItem>
+              </Select>
+            </FormControl>
             <Box
               sx={{
                 alignItems: 'center',

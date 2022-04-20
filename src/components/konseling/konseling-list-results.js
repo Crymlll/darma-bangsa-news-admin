@@ -165,6 +165,6 @@ export const KonselingListResults = ({...rest }) => {
   );
 };
 
-KonselingListResults.propTypes = {
-  customers: PropTypes.array.isRequired
-};
+// KonselingListResults.propTypes = {
+//   customers: PropTypes.array.isRequired
+// };

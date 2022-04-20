@@ -28,21 +28,18 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  query,
-  orderBy
 } from "firebase/firestore";
 
 
 
 
 
-export const BeritaCard = ({...rest }) => {
+export const PerizinanListResults = ({...rest }) => {
   const [newName, setNewName] = useState("");
   const [newAge, setNewAge] = useState(0);
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "berita");
-  const q = query(usersCollectionRef, orderBy("urutan"));
+  const usersCollectionRef = collection(db, "konseling");
   // const logData = async () => {
   //   const data = await getDocs(usersCollectionRef);
   //   console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
@@ -50,23 +47,23 @@ export const BeritaCard = ({...rest }) => {
   // logData()
 
   const createUser = async () => {
-    await addDoc(q, { name: newName, age: Number(newAge) });
+    await addDoc(usersCollectionRef, { name: newName, age: Number(newAge) });
   };
 
   const updateUser = async (id, age) => {
-    const userDoc = doc(db, "berita", id);
+    const userDoc = doc(db, "konseling", id);
     const newFields = { age: age + 1 };
     await updateDoc(userDoc, newFields);
   };
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "berita", id);
+    const userDoc = doc(db, "konseling", id);
     await deleteDoc(userDoc);
   };
 
   useEffect(() => {
     const getUsers = async () => {
-      const data = await getDocs(q);
+      const data = await getDocs(usersCollectionRef);
       setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
 
@@ -84,16 +81,25 @@ export const BeritaCard = ({...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  ID 
+                  Perizinans 
                 </TableCell>
                 <TableCell>
-                  Judul
+                  Nama
                 </TableCell>
                 <TableCell>
-                  Konten
+                  Guru
                 </TableCell>
                 <TableCell>
-                  Aksi
+                  Deskripsi
+                </TableCell>
+                <TableCell>
+                  Jam
+                </TableCell>
+                <TableCell>
+                  Status
+                </TableCell>
+                <TableCell>
+                  Action
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -105,13 +111,22 @@ export const BeritaCard = ({...rest }) => {
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                   >
                   <TableCell>
-                    {customer.urutan}
+                    {customer.permasalahan}
                   </TableCell>
                   <TableCell>
-                    {customer.judul}
+                    {customer.nama}
                   </TableCell>
                   <TableCell>
-                    {customer.konten}
+                    {customer.guru}
+                  </TableCell>
+                  <TableCell>
+                    {customer.deskripsi}
+                  </TableCell>
+                  <TableCell>
+                    {customer.jam}
+                  </TableCell>
+                  <TableCell>
+                    {customer.status}
                   </TableCell>
 
                   <TableCell>
@@ -120,7 +135,7 @@ export const BeritaCard = ({...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Link href={`/berita/edit?id=${encodeURIComponent(customer.id)}`}>
+                      <Link href={`/konseling/edit?id=${encodeURIComponent(customer.id)}`}>
                         <Button
                           color="warning"
                           variant="contained"
@@ -131,7 +146,7 @@ export const BeritaCard = ({...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/berita"
+                        href = "/konseling"
                         onClick={ () => {
                           deleteUser(customer.id)
                         }}
@@ -150,6 +165,6 @@ export const BeritaCard = ({...rest }) => {
   );
 };
 
-// BeritaCard.propTypes = {
+// Perizinan.propTypes = {
 //   customers: PropTypes.array.isRequired
 // };

@@ -39,6 +39,11 @@ const items = [
     title: 'Konseling'
   },
   {
+    href: '/perizinan',
+    icon: (<SelectorIcon fontSize="small" />),
+    title: 'Perizinan'
+  },
+  {
     href: '/settings',
     icon: (<CogIcon fontSize="small" />),
     title: 'Settings'
