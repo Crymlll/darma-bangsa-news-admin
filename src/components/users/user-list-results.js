@@ -151,7 +151,7 @@ export const UserListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((customer) => (
+              {users.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -214,7 +214,7 @@ export const UserListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={users.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -225,6 +225,6 @@ export const UserListResults = ({ customers, ...rest }) => {
   );
 };
 
-UserListResults.propTypes = {
-  customers: PropTypes.array.isRequired
-};
+// UserListResults.propTypes = {
+//   customers: PropTypes.array.isRequired
+// };
