@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import Link from 'next/link'
-import { format } from 'date-fns';
+import PerfectScrollbar from "react-perfect-scrollbar";
+import PropTypes from "prop-types";
+import Link from "next/link";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -15,24 +15,12 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
-} from '@mui/material';
-import { getInitials } from '../../utils/get-initials';
-
+  Typography,
+} from "@mui/material";
+import { getInitials } from "../../utils/get-initials";
 
 import { db } from "../../firebase/firebase";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-
-
-
-
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 
 export const UserListResults = ({ customers, ...rest }) => {
   const [newName, setNewName] = useState("");
@@ -56,17 +44,14 @@ export const UserListResults = ({ customers, ...rest }) => {
     await deleteDoc(userDoc);
   };
 
-  useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
+  const getUsers = async () => {
+    const data = await getDocs(usersCollectionRef);
+    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
 
+  useEffect(() => {
     getUsers();
   }, []);
-
-
-
 
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -124,30 +109,18 @@ export const UserListResults = ({ customers, ...rest }) => {
                     checked={selectedCustomerIds.length === customers.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                      selectedCustomerIds.length > 0 &&
+                      selectedCustomerIds.length < customers.length
                     }
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell>
-                  Nama
-                </TableCell>
-                <TableCell>
-                  NISN / NIP
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Kelas
-                </TableCell>
-                <TableCell>
-                  Role
-                </TableCell>
-                <TableCell>
-                  Action
-                </TableCell>
+                <TableCell>Nama</TableCell>
+                <TableCell>NISN / NIP</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Kelas</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -164,42 +137,31 @@ export const UserListResults = ({ customers, ...rest }) => {
                       value="true"
                     />
                   </TableCell>
-                  <TableCell>
-                    {customer.nama}
-                  </TableCell>
-                  <TableCell>
-                    {customer.no_induk}
-                  </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {customer.kelas}
-                  </TableCell>
-                  <TableCell>
-                    {customer.role}
-                  </TableCell>
+                  <TableCell>{customer.nama}</TableCell>
+                  <TableCell>{customer.no_induk}</TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{customer.kelas}</TableCell>
+                  <TableCell>{customer.role}</TableCell>
 
                   <TableCell>
                     <Box
                       sx={{
-                        display: 'flex'
+                        display: "flex",
                       }}
                     >
                       <Link href={`/users/edit?id=${encodeURIComponent(customer.id)}`}>
-                        <Button
-                          color="warning"
-                          variant="contained"
-                        >
+                        <Button color="warning" variant="contained">
                           Edit
                         </Button>
                       </Link>
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/users"
-                        onClick={ () => {
-                          deleteUser(customer.id)
+                        // href="/users"
+                        onClick={() => {
+                          console.log(customer.id);
+                          deleteUser(customer.id);
+                          getUsers();
                         }}
                       >
                         Delete
