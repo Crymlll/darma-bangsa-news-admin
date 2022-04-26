@@ -22,8 +22,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 import { useState, useEffect } from "react";
-import { db } from "../../firebase/firebase";
-// import { getAuth } from "../../firebase/auth"
+import { db, auth } from "../../firebase/firebase";
 import {
   collection,
   getDocs,
@@ -32,7 +31,9 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore';
-
+import {
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
 
 
 const Register = () => {
@@ -137,6 +138,11 @@ const clickHandler = (textInput) => {
           no_induk: formik.values.no_induk,
           role: formik.values.role,
         });
+        await createUserWithEmailAndPassword(
+          auth,
+          formik.values.email, 
+          formik.values.password,
+        );
       };
 
       createUser()

@@ -90,12 +90,31 @@ export const UserListResults = ({ customers, ...rest }) => {
   };
 
   const handleLimitChange = (event) => {
+    console.log(event.target.value)
     setLimit(event.target.value);
   };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  
+  // const searchform = document.querySelector('#searchq');
+  // searchform.addEventListener('keyup', SearchQuery)
+  
+  // function SearchQuery(e) {
+     
+  //         // var searchResult = data3.filter( 
+  //         //     (x) => x.namamk.toLowerCase().includes(e.target.value.toLowerCase())
+  //         //     || x.kodemk.toLowerCase().includes(e.target.value.toLowerCase())
+  //         //     || x.kodek == e.target.value
+  //         //     || x.namak.toLowerCase().includes(e.target.value.toLowerCase())
+  //         //     || x.sks == e.target.value
+  //         // )
+  
+  //         console.log(e.target.value)
+  //         // console.log(searchResult)
+  //         // ChangeRow(searchResult, 1, rows)
+  // }
 
   return (
     <Card {...rest}>
@@ -124,7 +143,7 @@ export const UserListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.slice(0, limit).map((customer) => (
+              {users.slice(limit*page, limit*(page+1)).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
