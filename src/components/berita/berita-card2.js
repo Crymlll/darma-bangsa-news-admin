@@ -30,6 +30,18 @@ import { ref, onValue, child, get } from "firebase/database";
 export const BeritaCard2 = ({...rest }) => {
   const [newName, setNewName] = useState("");
   const [newAge, setNewAge] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleLimitChange = (event) => {
+    console.log(event.target.value)
+    setLimit(event.target.value);
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+  
 
   const [users, setUsers] = useState([]);
   const usersCollectionRef = ref(dbrealtime, 'berita');
@@ -61,16 +73,17 @@ export const BeritaCard2 = ({...rest }) => {
     await deleteDoc(userDoc);
   };
 
+  const getUsers = async () => {  
+    console.log("data")
+    onValue(usersCollectionRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data)
+      setUsers(data);
+      console.log(users)
+    })
+  };
+
   useEffect(() => {
-    const getUsers = async () => {  
-      console.log("data")
-      onValue(usersCollectionRef, (snapshot) => {
-        const data = snapshot.val();
-        console.log(data)
-        setUsers(data);
-        console.log(users)
-      })
-    };
 
     getUsers();
   }, []);
@@ -86,7 +99,7 @@ export const BeritaCard2 = ({...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  ID 
+                  ID2 
                 </TableCell>
                 <TableCell>
                   Judul 
@@ -133,9 +146,11 @@ export const BeritaCard2 = ({...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/users"
+                        // href = "/users"
                         onClick={ () => {
-                          deleteUser(customer.id)
+                          console.log(customer.id);
+                          deleteUser(customer.id);
+                          getUsers();
                         }}
                       >
                         Delete
@@ -148,6 +163,15 @@ export const BeritaCard2 = ({...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={users.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
     </Card>
   );
 };

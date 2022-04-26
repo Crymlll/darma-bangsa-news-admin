@@ -60,12 +60,26 @@ export const KonselingListResults = ({...rest }) => {
     const userDoc = doc(db, "konseling", id);
     await deleteDoc(userDoc);
   };
+  
+
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleLimitChange = (event) => {
+    console.log(event.target.value)
+    setLimit(event.target.value);
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const getUsers = async () => {
+    const data = await getDocs(usersCollectionRef);
+    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
 
   useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
 
     getUsers();
   }, []);
@@ -104,7 +118,7 @@ export const KonselingListResults = ({...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((customer) => (
+              {users.slice(limit*page, limit*(page+1)).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -146,9 +160,11 @@ export const KonselingListResults = ({...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/konseling"
+                        // href = "/konseling"
                         onClick={ () => {
-                          deleteUser(customer.id)
+                          console.log(customer.id);
+                          deleteUser(customer.id);
+                          getUsers();
                         }}
                       >
                         Delete
@@ -161,6 +177,15 @@ export const KonselingListResults = ({...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={users.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[3, 5, 10, 25]}
+      />
     </Card>
   );
 };

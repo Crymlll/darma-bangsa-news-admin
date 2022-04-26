@@ -31,8 +31,6 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  query,
-  where
 } from "firebase/firestore";
 
 
@@ -43,11 +41,11 @@ const Edit = () => {
   // console.log(dataQuery.id)
   
   const [text, onChangeText] = useState({
-    permasalahan: '',
-    guru: '',
     nama: '',
     kelas: '',
-    jam: '',
+    alasan: '',
+    kegiatan: '',
+    tanggal: '',
     status: '',
 });
 
@@ -60,97 +58,75 @@ const clickHandler = (textInput) => {
   const [newName, setNewName] = useState("");
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "konseling");
-  const usersCollectionRef2 = collection(db, "users");
+  const usersCollectionRef = collection(db, "perizinan");
 
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "konseling", id);
+    const userDoc = doc(db, "perizinan", id);
     await deleteDoc(userDoc);
   };
 
-
   useEffect(() => {
     const getUsers = async () => {
-      let fetchdata = doc(db, 'konseling', dataQuery.id)
-      // const q = await usersCollectionRef.where('role', 'in', ['wali kelas', 'guru', 'guru konseling']).get();
+      let fetchdata = doc(db, 'perizinan', dataQuery.id)
       const dataAll = await getDoc(fetchdata);
       console.log(dataAll.data())
 
       formik.setValues({
-        permasalahan: dataAll.data().permasalahan,
+        alasan: dataAll.data().alasan,
+        kegiatan: dataAll.data().kegiatan,
+        kelas: dataAll.data().kelas,
         nama: dataAll.data().nama,
-        guru: dataAll.data().guru,
-        deskripsi: dataAll.data().deskripsi,
-        jam: dataAll.data().jam,
+        tanggal: dataAll.data().tanggal,
         status: dataAll.data().status,
       })
-      // console.log(q)
-      console.log("tes")
       // console.log(users.kelas)
       // const data = await getDocs(usersCollectionRef);
       // setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-    const cobaTes = async () => {
-  
-      // const q = query(usersCollectionRef, where('role', 'in', ['wali kelas', 'guru', 'guru konseling']));
-      const q = query(usersCollectionRef2, where("role", "!=", "siswa"));
-      const hasil = await getDocs(q);
-      const semuaGuru = hasil.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      console.log(semuaGuru[0].nama)
-      setUsers(semuaGuru)
-    }
 
     getUsers();
-
-    cobaTes();
     
   }, []);
 
+
   const formik = useFormik({
     initialValues: {
-      permasalahan: '',
-      guru: '',
+      alasan: '',
+      kegiatan: '',
       nama: '',
-      deskripsi: '',
-      jam: '',
+      kelas: '',
+      tanggal: '',
       status: '',
       policy: false,
     },
     validationSchema: Yup.object({
-      permasalahan: Yup
-        .string()
-        .email(
-          'Must be a valid email')
-        .max(255)
-        .required(
-          'Email is required'),
-      status: Yup
+      alasan: Yup
       .string()
       .max(255)
       .required(
-        'No Induk is required'),
-      nama: Yup
+        'Alasan is required'),
+      status: Yup
         .string()
         .max(255)
         .required(
-          'Nama is required'),
-      guru: Yup
+          'Status is required'),
+      kelas: Yup
         .string()
         .max(255)
         .required(
           'Kelas is required'),
-      deskripsi: Yup
+      tanggal: Yup
         .string()
         .max(255)
         .required(
-          'Deskripsi is required'),
-      role: Yup
+          'Tanggal is required'),
+      kegiatan: Yup
       .string()
       .max(255)
       .required(
-        'Role is required'),
-      jam: Yup
+        'Kegiatan is required'),
+      password: Yup
         .string()
         .max(255)
         .required(
@@ -168,21 +144,20 @@ const clickHandler = (textInput) => {
       // };
 
       const updateUser = async () => {
-        const userDoc = doc(db, "konseling", dataQuery.id);
+        const userDoc = doc(db, "perizinan", dataQuery.id);
         const newFields = { 
-          permsalahan: formik.values.permsalahan,
-          guru: formik.values.guru,
+          alasan: formik.values.alasan,
+          kelas: formik.values.kelas,
           nama: formik.values.nama,
-          deskripsi: formik.values.deskripsi,
-          jam: formik.values.jam,
-          status: formik.values.status,
+          kegiatan: formik.values.kegiatan,
+          tanggal: formik.values.tanggal,
         };
         await updateDoc(userDoc, newFields);
       };
 
       updateUser()
 
-      router.push('/konseling');
+      router.push('/users');
     }
   });
 
@@ -204,14 +179,14 @@ const clickHandler = (textInput) => {
       >
         <Container maxWidth="sm">
           <NextLink
-            href="/konseling"
+            href="/perizinan"
             passHref
           >
             <Button
               component="a"
               startIcon={<ArrowBackIcon fontSize="small" />}
             >
-              Konseling
+              Users
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
@@ -219,8 +194,8 @@ const clickHandler = (textInput) => {
               <Typography
                 color="textPrimary"
                 variant="h4"
-              > 
-                Edit Data Konseling
+              >
+                Edit User
               </Typography>
               <Typography
                 color="textSecondary"
@@ -231,15 +206,15 @@ const clickHandler = (textInput) => {
               </Typography>
             </Box>
             <TextField
-              error={Boolean(formik.touched.permasalahan && formik.errors.permasalahan)}
+              error={Boolean(formik.touched.kelas && formik.errors.kelas)}
               fullWidth
-              helperText={formik.touched.permasalahan && formik.errors.permasalahan}
-              label="Permasalahan"
+              helperText={formik.touched.kelas && formik.errors.kelas}
+              label="Kelas"
               margin="normal"
-              name="permasalahan"
+              name="kelas"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.permasalahan}
+              value={formik.values.kelas}
               variant="outlined"
             />
             <TextField
@@ -250,24 +225,47 @@ const clickHandler = (textInput) => {
               margin="normal"
               name="nama"
               onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               value={formik.values.nama}
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.deskripsi && formik.errors.deskripsi)}
+              error={Boolean(formik.touched.no_induk && formik.errors.no_induk)}
               fullWidth
-              helperText={formik.touched.deskripsi && formik.errors.deskripsi}
-              label="Deskripsi"
+              helperText={formik.touched.no_induk && formik.errors.no_induk}
+              label="Alasan"
               margin="normal"
-              name="deskripsi"
+              name="alasan"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.deskripsi}
+              value={formik.values.alasan}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.no_induk && formik.errors.no_induk)}
+              fullWidth
+              helperText={formik.touched.no_induk && formik.errors.no_induk}
+              label="Kegiatan"
+              margin="normal"
+              name="kegiatan"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.kegiatan}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.no_induk && formik.errors.no_induk)}
+              fullWidth
+              helperText={formik.touched.no_induk && formik.errors.no_induk}
+              label="Tanggal"
+              margin="normal"
+              name="tanggal"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.tanggal}
               variant="outlined"
             />
             <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Status</InputLabel>
+              <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
               <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
@@ -279,47 +277,9 @@ const clickHandler = (textInput) => {
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={'on pending'}>On Pending</MenuItem>
-                <MenuItem value={'declined'}>Declined</MenuItem>
-                <MenuItem value={'scheduled'}>Scheduled</MenuItem>
-                <MenuItem value={'done'}>Done</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Guru</InputLabel>
-              <Select
-                labelId="demo-simple-select-autowidth-label"
-                id="demo-simple-select-autowidth"
-                value={formik.values.guru}
-                onChange={formik.handleChange('guru')}
-                autoWidth
-                label="Guru"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {users.map(item => (
-                  <MenuItem value={item.nama}>{item.nama}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Jam</InputLabel>
-              <Select
-                labelId="demo-simple-select-autowidth-label"
-                id="demo-simple-select-autowidth"
-                value={formik.values.jam}
-                onChange={formik.handleChange('jam')}
-                autoWidth
-                label="Jam"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={'9.30'}>9.30 - 10.15</MenuItem>
-                <MenuItem value={'10.30'}>10.30 - 11.15</MenuItem>
-                <MenuItem value={'11.30'}>11.30 - 12.15</MenuItem>
-                <MenuItem value={'13.30'}>13.30 - 14.15</MenuItem>
+                <MenuItem value={'menunggu'}>Menunggu</MenuItem>
+                <MenuItem value={'disetujui'}>Disetujui</MenuItem>
+                <MenuItem value={'ditolak'}>Ditolak</MenuItem>
               </Select>
             </FormControl>
             <Box

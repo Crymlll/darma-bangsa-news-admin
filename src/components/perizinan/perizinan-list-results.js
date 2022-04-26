@@ -39,7 +39,7 @@ export const PerizinanListResults = ({...rest }) => {
   const [newAge, setNewAge] = useState(0);
 
   const [users, setUsers] = useState([]);
-  const usersCollectionRef = collection(db, "konseling");
+  const usersCollectionRef = collection(db, "perizinan");
   // const logData = async () => {
   //   const data = await getDocs(usersCollectionRef);
   //   console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
@@ -51,21 +51,35 @@ export const PerizinanListResults = ({...rest }) => {
   };
 
   const updateUser = async (id, age) => {
-    const userDoc = doc(db, "konseling", id);
+    const userDoc = doc(db, "perizinan", id);
     const newFields = { age: age + 1 };
     await updateDoc(userDoc, newFields);
   };
 
   const deleteUser = async (id) => {
-    const userDoc = doc(db, "konseling", id);
+    const userDoc = doc(db, "perizinan", id);
     await deleteDoc(userDoc);
+  };
+  
+
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleLimitChange = (event) => {
+    console.log(event.target.value)
+    setLimit(event.target.value);
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const getUsers = async () => {
+    const data = await getDocs(usersCollectionRef);
+    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
 
     getUsers();
   }, []);
@@ -81,19 +95,19 @@ export const PerizinanListResults = ({...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Perizinans 
+                  Kelas 
                 </TableCell>
                 <TableCell>
                   Nama
                 </TableCell>
                 <TableCell>
-                  Guru
+                  Alasan
                 </TableCell>
                 <TableCell>
-                  Deskripsi
+                  Kegiatan
                 </TableCell>
                 <TableCell>
-                  Jam
+                  Tanggal
                 </TableCell>
                 <TableCell>
                   Status
@@ -104,26 +118,26 @@ export const PerizinanListResults = ({...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((customer) => (
+              {users.slice(limit*page, limit*(page+1)).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                   >
                   <TableCell>
-                    {customer.permasalahan}
+                    {customer.kelas}
                   </TableCell>
                   <TableCell>
                     {customer.nama}
                   </TableCell>
                   <TableCell>
-                    {customer.guru}
+                    {customer.alasan}
                   </TableCell>
                   <TableCell>
-                    {customer.deskripsi}
+                    {customer.kegiatan}
                   </TableCell>
                   <TableCell>
-                    {customer.jam}
+                    {customer.tanggal}
                   </TableCell>
                   <TableCell>
                     {customer.status}
@@ -135,7 +149,7 @@ export const PerizinanListResults = ({...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Link href={`/konseling/edit?id=${encodeURIComponent(customer.id)}`}>
+                      <Link href={`/perizinan/edit?id=${encodeURIComponent(customer.id)}`}>
                         <Button
                           color="warning"
                           variant="contained"
@@ -146,9 +160,11 @@ export const PerizinanListResults = ({...rest }) => {
                       <Button
                         color="error"
                         variant="contained"
-                        href = "/konseling"
+                        // href = "/konseling"
                         onClick={ () => {
-                          deleteUser(customer.id)
+                          console.log(customer.id);
+                          deleteUser(customer.id);
+                          getUsers();
                         }}
                       >
                         Delete
@@ -161,6 +177,15 @@ export const PerizinanListResults = ({...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={users.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[3, 5, 10, 25]}
+      />
     </Card>
   );
 };
