@@ -120,8 +120,6 @@ const clickHandler = (textInput) => {
     validationSchema: Yup.object({
       permasalahan: Yup
         .string()
-        .email(
-          'Must be a valid email')
         .max(255)
         .required(
           'Email is required'),
@@ -250,7 +248,6 @@ const clickHandler = (textInput) => {
               margin="normal"
               name="nama"
               onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               value={formik.values.nama}
               variant="outlined"
             />

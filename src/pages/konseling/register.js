@@ -31,6 +31,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  where
 } from 'firebase/firestore';
 
 
@@ -54,7 +56,9 @@ const clickHandler = (textInput) => {
   const [newName, setNewName] = useState("");
 
   const [users, setUsers] = useState([]);
+  const [users2, setUsers2] = useState([]);
   const usersCollectionRef = collection(db, "users");
+  const usersCollectionRef2 = collection(db, "users");
 
   const updateUser = async (id, age) => {
     const userDoc = doc(db, "users", id);
@@ -68,39 +72,47 @@ const clickHandler = (textInput) => {
   };
 
   useEffect(() => {
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
+    const cobaTes = async () => {
+  
+      // const q = query(usersCollectionRef, where('role', 'in', ['wali kelas', 'guru', 'guru konseling']));
+      const q = query(usersCollectionRef2, where("role", "==", "guru konseling"));
+      const q2 = query(usersCollectionRef, where("role", "==", "siswa") )
+      const hasil = await getDocs(q);
+      const hasil2 = await getDocs(q2);
+      const semuaMurid = hasil2.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const semuaGuru = hasil.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      setUsers(semuaGuru)
+      setUsers2(semuaMurid)
+    }
 
-    getUsers();
+
+    cobaTes();
+    
   }, []);
 
 
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      no_induk: '',
-      email: '',
+      permasalahan: '',
+      guru: '',
       nama: '',
       kelas: '',
-      password: '',
-      role: '',
+      jam: '',
+      status: '',
       policy: false,
     },
     validationSchema: Yup.object({
-      email: Yup
+      permasalahan: Yup
         .string()
-        .email(
-          'Must be a valid email')
         .max(255)
         .required(
           'Email is required'),
-      no_induk: Yup
+      guru: Yup
       .string()
       .max(255)
       .required(
-        'No Induk is required'),
+        'Guru is required'),
       nama: Yup
         .string()
         .max(255)
@@ -111,16 +123,16 @@ const clickHandler = (textInput) => {
         .max(255)
         .required(
           'Kelas is required'),
-      role: Yup
+      jam: Yup
       .string()
       .max(255)
       .required(
-        'Role is required'),
-      password: Yup
+        'Jam is required'),
+      status: Yup
         .string()
         .max(255)
         .required(
-          'Password is required'),
+          'Status is required'),
       policy: Yup
         .boolean()
         .oneOf(
@@ -131,17 +143,18 @@ const clickHandler = (textInput) => {
     onSubmit: () => {
       const createUser = async () => {
         await addDoc(usersCollectionRef, {
-          email: formik.values.email,
-          kelas: formik.values.kelas,
+          permsalahan: formik.values.permsalahan,
+          guru: formik.values.guru,
           nama: formik.values.nama,
-          no_induk: formik.values.no_induk,
-          role: formik.values.role,
+          deskripsi: formik.values.deskripsi,
+          jam: formik.values.jam,
+          status: formik.values.status,
         });
       };
 
       createUser()
 
-      router.push('/users');
+      router.push('/konseling');
     }
   });
 
@@ -174,21 +187,33 @@ const clickHandler = (textInput) => {
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
-            <Box sx={{ my: 3 }}>
+          <Box sx={{ my: 3 }}>
               <Typography
                 color="textPrimary"
                 variant="h4"
-              >
-                Membuat Jadwal Konseling
+              > 
+                Edit Data Konseling
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
               >
-                Silahkan isi data user dan konsister di bawah ini
+                Silahkan lengkapi data user di bawah ini
               </Typography>
             </Box>
+            <TextField
+              error={Boolean(formik.touched.permasalahan && formik.errors.permasalahan)}
+              fullWidth
+              helperText={formik.touched.permasalahan && formik.errors.permasalahan}
+              label="Permasalahan"
+              margin="normal"
+              name="permasalahan"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.permasalahan}
+              variant="outlined"
+            />
             <TextField
               error={Boolean(formik.touched.nama && formik.errors.nama)}
               fullWidth
@@ -197,79 +222,77 @@ const clickHandler = (textInput) => {
               margin="normal"
               name="nama"
               onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               value={formik.values.nama}
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.no_induk && formik.errors.no_induk)}
+              error={Boolean(formik.touched.deskripsi && formik.errors.deskripsi)}
               fullWidth
-              helperText={formik.touched.no_induk && formik.errors.no_induk}
-              label="No Induk"
+              helperText={formik.touched.deskripsi && formik.errors.deskripsi}
+              label="Deskripsi"
               margin="normal"
-              name="no_induk"
+              name="deskripsi"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.no_induk}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.kelas && formik.errors.kelas)}
-              fullWidth
-              helperText={formik.touched.kelas && formik.errors.kelas}
-              label="Kelas"
-              margin="normal"
-              name="kelas"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.kelas}
+              value={formik.values.deskripsi}
               variant="outlined"
             />
             <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
+              <InputLabel id="demo-simple-select-autowidth-label">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={formik.values.role}
-                onChange={formik.handleChange('role')}
+                value={formik.values.status}
+                onChange={formik.handleChange('status')}
                 autoWidth
-                label="Role"
+                label="Status"
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={'siswa'}>Siswa</MenuItem>
-                <MenuItem value={'guru'}>Guru</MenuItem>
-                <MenuItem value={'guru konseling'}>Guru Konseling</MenuItem>
-                <MenuItem value={'wali kelas'}>Wali Kelas</MenuItem>
+                <MenuItem value={'on pending'}>On Pending</MenuItem>
+                <MenuItem value={'declined'}>Declined</MenuItem>
+                <MenuItem value={'scheduled'}>Scheduled</MenuItem>
+                <MenuItem value={'done'}>Done</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
-              fullWidth
-              helperText={formik.touched.email && formik.errors.email}
-              label="Email Address"
-              margin="normal"
-              name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="email"
-              value={formik.values.email}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
-              fullWidth
-              helperText={formik.touched.password && formik.errors.password}
-              label="Password"
-              margin="normal"
-              name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              type="password"
-              value={formik.values.password}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Guru</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.guru}
+                onChange={formik.handleChange('guru')}
+                autoWidth
+                label="Guru"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {users.map(item => (
+                  <MenuItem value={item.nama}>{item.nama}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Jam</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.jam}
+                onChange={formik.handleChange('jam')}
+                autoWidth
+                label="Jam"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'9.30'}>9.30 - 10.15</MenuItem>
+                <MenuItem value={'10.30'}>10.30 - 11.15</MenuItem>
+                <MenuItem value={'11.30'}>11.30 - 12.15</MenuItem>
+                <MenuItem value={'13.30'}>13.30 - 14.15</MenuItem>
+              </Select>
+            </FormControl>
             <Box
               sx={{
                 alignItems: 'center',

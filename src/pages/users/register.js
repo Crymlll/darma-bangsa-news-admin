@@ -68,6 +68,22 @@ const clickHandler = (textInput) => {
     await deleteDoc(userDoc);
   };
 
+  const checkUser = (email) => {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].email === email) {
+        return true;
+      }
+    }
+  }
+
+  const checkUserInduk = (no_induk) => {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].no_induk === no_induk) {
+        return true;
+      }
+    }
+  }
+
   useEffect(() => {
     const getUsers = async () => {
       const data = await getDocs(usersCollectionRef);
@@ -120,6 +136,7 @@ const clickHandler = (textInput) => {
       password: Yup
         .string()
         .max(255)
+        .min(8)
         .required(
           'Password is required'),
       policy: Yup
@@ -130,24 +147,30 @@ const clickHandler = (textInput) => {
         )
     }),
     onSubmit: () => {
-      const createUser = async () => {
-        await addDoc(usersCollectionRef, {
-          email: formik.values.email,
-          kelas: formik.values.kelas,
-          nama: formik.values.nama,
-          no_induk: formik.values.no_induk,
-          role: formik.values.role,
-        });
-        await createUserWithEmailAndPassword(
-          auth,
-          formik.values.email, 
-          formik.values.password,
-        );
-      };
-
-      createUser()
-
-      router.push('/users');
+      if(checkUser(formik.values.email)){
+          alert('E-mail telah digunakan!');
+      }
+      else if(checkUserInduk(formik.values.no_induk)){
+        alert('No Induk telah digunakan!');
+      }
+      else{
+        const createUser = async () => {
+          await addDoc(usersCollectionRef, {
+            email: formik.values.email,
+            kelas: formik.values.kelas,
+            nama: formik.values.nama,
+            no_induk: formik.values.no_induk,
+            role: formik.values.role,
+          });
+          await createUserWithEmailAndPassword(
+            auth,
+            formik.values.email, 
+            formik.values.password,
+          );
+        };
+        createUser();
+        router.push('/users');
+      }
     }
   });
 
@@ -219,18 +242,27 @@ const clickHandler = (textInput) => {
               value={formik.values.no_induk}
               variant="outlined"
             />
-            <TextField
-              error={Boolean(formik.touched.kelas && formik.errors.kelas)}
-              fullWidth
-              helperText={formik.touched.kelas && formik.errors.kelas}
-              label="Kelas"
-              margin="normal"
-              name="kelas"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.kelas}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 80 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Kelas</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.kelas}
+                onChange={formik.handleChange('kelas')}
+                autoWidth
+                label="Kelas"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'10-A'}>10-A</MenuItem>
+                <MenuItem value={'10-B'}>10-B</MenuItem>
+                <MenuItem value={'11-A'}>11-A</MenuItem>
+                <MenuItem value={'11-B'}>11-B</MenuItem>
+                <MenuItem value={'12-A'}>12-A</MenuItem>
+                <MenuItem value={'12-B'}>12-B</MenuItem>
+              </Select>
+            </FormControl>
             <FormControl sx={{ m: 1, minWidth: 80 }}>
               <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
               <Select
