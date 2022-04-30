@@ -151,6 +151,7 @@ const clickHandler = (textInput) => {
           nama: formik.values.nama,
           kegiatan: formik.values.kegiatan,
           tanggal: formik.values.tanggal,
+          status: formik.values.status
         };
         await updateDoc(userDoc, newFields);
       };

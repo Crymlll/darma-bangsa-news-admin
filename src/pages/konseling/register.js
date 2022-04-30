@@ -107,22 +107,22 @@ const clickHandler = (textInput) => {
         .string()
         .max(255)
         .required(
-          'Email is required'),
+          'Permasalahan is required'),
       guru: Yup
       .string()
       .max(255)
       .required(
         'Guru is required'),
+      deskripsi: Yup
+        .string()
+        .max(255)
+        .required(
+          'Deskripsi is required'),
       nama: Yup
         .string()
         .max(255)
         .required(
           'Nama is required'),
-      kelas: Yup
-        .string()
-        .max(255)
-        .required(
-          'Kelas is required'),
       jam: Yup
       .string()
       .max(255)
@@ -192,7 +192,7 @@ const clickHandler = (textInput) => {
                 color="textPrimary"
                 variant="h4"
               > 
-                Edit Data Konseling
+                Membuat Data Konseling
               </Typography>
               <Typography
                 color="textSecondary"
@@ -202,18 +202,23 @@ const clickHandler = (textInput) => {
                 Silahkan lengkapi data user di bawah ini
               </Typography>
             </Box>
-            <TextField
-              error={Boolean(formik.touched.permasalahan && formik.errors.permasalahan)}
-              fullWidth
-              helperText={formik.touched.permasalahan && formik.errors.permasalahan}
-              label="Permasalahan"
-              margin="normal"
-              name="permasalahan"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.permasalahan}
-              variant="outlined"
-            />
+            <FormControl sx={{ m: 1, minWidth: 160 }}>
+              <InputLabel id="demo-simple-select-autowidth-label">Permasalahan</InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formik.values.permasalahan}
+                onChange={formik.handleChange('permasalahan')}
+                autoWidth
+                label="Permasalahan"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'non akademik'}>Non Akademik</MenuItem>
+                <MenuItem value={'akademik'}>Akademik</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               error={Boolean(formik.touched.nama && formik.errors.nama)}
               fullWidth
@@ -237,7 +242,7 @@ const clickHandler = (textInput) => {
               value={formik.values.deskripsi}
               variant="outlined"
             />
-            <FormControl sx={{ m: 1, minWidth: 80 }}>
+            <FormControl sx={{ m: 1, minWidth: 100 }}>
               <InputLabel id="demo-simple-select-autowidth-label">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-autowidth-label"

@@ -44,7 +44,7 @@ export const PerizinanListToolbar = (props) => (
         <Button
           color="primary"
           variant="contained"
-          href="/konseling/register"
+          href="/perizinan/register"
         >
           Add Perizinan
         </Button>
