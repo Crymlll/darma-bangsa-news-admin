@@ -59,6 +59,7 @@ const clickHandler = (textInput) => {
   const [users2, setUsers2] = useState([]);
   const usersCollectionRef = collection(db, "users");
   const usersCollectionRef2 = collection(db, "users");
+  const addedDoc = collection(db, "konseling")
 
   const updateUser = async (id, age) => {
     const userDoc = doc(db, "users", id);
@@ -142,7 +143,7 @@ const clickHandler = (textInput) => {
     }),
     onSubmit: () => {
       const createUser = async () => {
-        await addDoc(usersCollectionRef, {
+        await addDoc(addedDoc, {
           permsalahan: formik.values.permsalahan,
           guru: formik.values.guru,
           nama: formik.values.nama,
