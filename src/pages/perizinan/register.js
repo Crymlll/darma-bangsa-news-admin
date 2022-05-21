@@ -130,7 +130,6 @@ const Register = () => {
       policy: false,
     },
     validationSchema: Yup.object({
-      permasalahan: Yup.string().max(255).required("Permasalahan is required"),
       guru: Yup.string().max(255).required("Guru is required"),
       kegiatan: Yup.string().max(255).required("Kegiatan is required"),
       nama: Yup.string().max(255).required("Nama is required"),
@@ -270,24 +269,6 @@ const Register = () => {
                 <MenuItem value={"declined"}>Declined</MenuItem>
                 <MenuItem value={"scheduled"}>Scheduled</MenuItem>
                 <MenuItem value={"done"}>Done</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 80 }}>
-              <InputLabel id="demo-simple-select-autowidth-label">Guru</InputLabel>
-              <Select
-                labelId="demo-simple-select-autowidth-label"
-                id="demo-simple-select-autowidth"
-                value={formik.values.guru}
-                onChange={formik.handleChange("guru")}
-                autoWidth
-                label="Guru"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {users2.map((item) => (
-                  <MenuItem value={item.nama}>{item.nama}</MenuItem>
-                ))}
               </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 80 }}>
