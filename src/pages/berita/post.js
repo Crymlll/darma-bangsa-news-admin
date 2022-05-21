@@ -32,6 +32,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  orderBy
 } from "firebase/firestore";
 
 
@@ -60,7 +62,8 @@ const clickHandler = (textInput) => {
   const [users, setUsers] = useState([]);
   const [panjang, setPanjang] = useState([]);
 
-  const usersCollectionRef = ref(dbrealtime, 'berita');
+  const usersCollectionRef = collection(db, "berita");
+  const q = query(usersCollectionRef, orderBy("urutan"));
 
   const updateUser = async (id, age) => {
     const userDoc = doc(db, "users", id);
@@ -75,13 +78,10 @@ const clickHandler = (textInput) => {
 
   useEffect(() => {   
     const getUsers = async () => {  
-      console.log("data")
-      onValue(usersCollectionRef, (snapshot) => {
-        const data = snapshot.val();
-        console.log(data)
-        setUsers(data);
-        console.log(users)
-      })
+      const data = await getDocs(q);
+      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setPanjang(data.docs.length)
+      console.log(panjang)
     };
 
     getUsers();
@@ -116,14 +116,11 @@ const clickHandler = (textInput) => {
     }),
     onSubmit: () => {
       const createUser = async () => {
-        let id_berita = 0;
-        onValue(usersCollectionRef, (snapshot) => {
-          const data = snapshot.val();
-          id_berita = data.length
-        })
-        await set(ref(dbrealtime, 'berita/' + id_berita), {
+        let id_berita = panjang+1;
+        await addDoc(usersCollectionRef, {
           judul: formik.values.judul,
           konten: formik.values.konten,
+          urutan: id_berita
         });
       };
 
@@ -190,7 +187,7 @@ const clickHandler = (textInput) => {
               variant="outlined"
             />
             <TextareaAutosize
-              error={Boolean(formik.touched.judul && formik.errors.judul)}
+              error="false"
               label = "Isi Berita"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
